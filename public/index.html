@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Buy Robux - Roblox</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png" />
+  <link rel="shortcut icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/Builder.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Roblox">
+      <img class="brand-word" src="/assets/logo-wordmark.svg" alt="ROBLOX" />
+    </a>
+
+    <nav class="top-nav">
+      <a>Charts</a>
+      <a>Marketplace</a>
+      <a>Create</a>
+      <a class="active">Robux</a>
+    </nav>
+
+    <div class="site-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z"/></svg>
+      <span>Search</span>
+    </div>
+
+    <div class="top-account">
+      <img class="tiny-avatar" id="headerAvatar" src="/assets/default-avatar.png" alt="" />
+      <b class="top-name">riri</b>
+      <span class="bell-wrap" aria-label="Notifications">
+        <img class="header-ico bell-ico" src="/assets/icons/bell.svg" alt="" width="22" height="22" />
+        <em class="bell-badge">1</em>
+      </span>
+      <div class="top-balance">
+        <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+        <b id="topBalance">—</b>
+      </div>
+      <img class="header-ico gear-ico" src="/assets/icons/settings.svg" alt="" width="22" height="22" aria-label="Settings" />
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <div class="side-profile">
+      <img class="avatar-placeholder" id="sideAvatar" src="/assets/default-avatar.png" alt="" />
+      <b>riri</b>
+    </div>
+
+    <div class="nav-item"><span class="side-ico ico-home"></span><b>Home</b></div>
+    <div class="nav-item"><span class="side-ico ico-profile"></span><b>Profile</b></div>
+    <div class="nav-item"><span class="side-ico ico-plus"><img src="/assets/roblox-plus.svg" alt="" /></span><b>Roblox Plus</b></div>
+    <div class="nav-item"><span class="side-ico ico-messages"></span><b>Messages</b><em>1</em></div>
+    <div class="nav-item"><span class="side-ico ico-friends"></span><b>Friends</b><em>17</em></div>
+    <div class="nav-item"><span class="side-ico ico-avatar"></span><b>Avatar</b></div>
+    <div class="nav-item"><span class="side-ico ico-inventory"></span><b>Inventory</b></div>
+    <div class="nav-item"><span class="side-ico ico-trade"></span><b>Trade</b></div>
+    <div class="nav-item"><span class="side-ico ico-communities"></span><b>Communities</b></div>
+    <div class="nav-item"><span class="side-ico ico-blog"></span><b>Blog</b></div>
+    <div class="nav-item"><span class="side-ico ico-store"></span><b>Official Store</b></div>
+    <div class="nav-item"><span class="side-ico ico-gift"></span><b>Buy Gift Cards</b></div>
+
+    <div class="subscribe-box">
+      <img class="plus-badge" src="/assets/roblox-plus.svg" alt="" />
+      <p>More fun for less Robux. Subscribe to Roblox Plus.</p>
+      <a class="subscribe-link">Subscribe</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="buy-robux-background" aria-hidden="true"></div>
+
+    <div class="balance-cluster">
+      <div class="balance-big">
+        <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+        <b id="heroBalance">—</b>
+      </div>
+      <button id="sendButton" class="send-button" type="button">
+        <img class="send-ico" src="/assets/send-up.svg" alt="" />
+        <span>Send</span>
+      </button>
+    </div>
+
+    <section class="hero">
+      <h1>Enjoy up to <span>25%</span> 50%<br>bonus Robux</h1>
+    </section>
+
+    <section class="pricing">
+      <div class="pricing-title">
+        <div>
+          <h2>Limited-time bonus Robux</h2>
+          <p>One-time bonus included in the package</p>
+        </div>
+        <span class="days">11 days left</span>
+      </div>
+      <div class="price-box" id="priceBox"></div>
+    </section>
+  </main>
+
+  <div class="chat">Chat <span>□</span></div>
+
+  <div id="modalShade" class="shade hidden">
+    <section class="send-modal" aria-modal="true" role="dialog">
+      <header class="send-head">
+        <div class="send-title">
+          <img class="plus-head" src="/assets/roblox-plus.svg" alt="" />
+          <h3>Send Robux</h3>
+        </div>
+        <div class="send-right">
+          <div class="modal-balance">
+            <img class="rbx-icon sm" src="/assets/robux.svg" alt="" />
+            <b id="modalBalance">—</b>
+          </div>
+          <button id="closeModal" aria-label="Close" type="button">×</button>
+        </div>
+      </header>
+
+      <div class="user-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z"/></svg>
+        <input id="userSearch" autocomplete="off" placeholder="Search" />
+      </div>
+
+      <h4 id="peopleTitle">My friends (0)</h4>
+      <div id="userResults" class="results"></div>
+    </section>
+  </div>
+
+  <!-- Buy Robux: Secure checkout -->
+  <div id="checkoutShade" class="shade hidden">
+    <section class="checkout-modal" role="dialog" aria-labelledby="checkoutTitle">
+      <header class="checkout-head">
+        <h3 id="checkoutTitle">
+          <svg class="lock-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9h-2zM9 7a3 3 0 1 1 6 0v2H9V7zm3 11.2a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z"/></svg>
+          Secure checkout
+        </h3>
+        <button id="checkoutClose" type="button" aria-label="Close">×</button>
+      </header>
+
+      <div class="checkout-body">
+        <div class="checkout-summary" id="checkoutSummary"></div>
+        <div class="checkout-methods" id="checkoutMethods"></div>
+      </div>
+
+      <p class="checkout-legal">By purchasing Robux, you agree to our <b>Terms of Use</b>, including the arbitration clause and revocation policy.</p>
+    </section>
+  </div>
+
+  <!-- Buy confirm -->
+  <div id="topupShade" class="shade hidden">
+    <section class="confirm-modal" role="dialog">
+      <header class="send-head">
+        <div class="send-title">
+          <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+          <h3>Confirm top-up</h3>
+        </div>
+        <button id="topupClose" type="button" aria-label="Close">×</button>
+      </header>
+      <div class="confirm-body">
+        <div class="payment-method paypal-saved" aria-label="PayPal">
+          <div class="payment-method-icon">
+            <img src="/assets/pay/paypal.png" alt="PayPal" />
+          </div>
+          <div class="payment-method-copy">
+            <b>PayPal</b>
+            <span>rhiv******@gmail.com</span>
+          </div>
+        </div>
+        <div id="topupSummary" class="topup-summary"></div>
+        <p class="small-note">Concept flow only. This does not charge PayPal or call a Roblox payment endpoint.</p>
+        <button id="topupConfirm" class="continue-button" type="button">Confirm purchase</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Send amount select (white theme) -->
+  <div id="amountShade" class="shade hidden">
+    <section class="amount-modal" role="dialog">
+      <header class="send-head">
+        <div class="send-title">
+          <img class="plus-head" src="/assets/roblox-plus.svg" alt="" />
+          <h3>Send Robux</h3>
+        </div>
+        <div class="send-right">
+          <div class="modal-balance">
+            <img class="rbx-icon sm" src="/assets/robux.svg" alt="" />
+            <b id="amountModalBalance">—</b>
+          </div>
+          <button id="amountClose" type="button" aria-label="Close">×</button>
+        </div>
+      </header>
+
+      <div class="amount-hero">
+        <div id="amountUser" class="amount-user"></div>
+        <div class="amount-display">
+          <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+          <input id="amountInput" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" value="50" aria-label="Robux amount" />
+        </div>
+        <div class="amount-presets" id="amountPresets"></div>
+        <p id="amountError" class="amount-error hidden" role="alert">Insufficient balance</p>
+        <button id="amountNext" class="continue-button full" type="button">Next</button>
+        <p class="amount-note">Robux are sent instantly with no fees.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Send confirm (white theme) -->
+  <div id="sendConfirmShade" class="shade hidden">
+    <section class="send-confirm-modal" role="dialog">
+      <header class="send-head">
+        <div class="send-title">
+          <img class="plus-head" src="/assets/roblox-plus.svg" alt="" />
+          <h3>Send Robux</h3>
+        </div>
+        <div class="send-right">
+          <div class="modal-balance">
+            <img class="rbx-icon sm" src="/assets/robux.svg" alt="" />
+            <b id="confirmModalBalance">—</b>
+          </div>
+          <button id="sendConfirmClose" type="button" aria-label="Close">×</button>
+        </div>
+      </header>
+
+      <div class="send-confirm-body">
+        <div id="confirmProfile" class="confirm-profile"></div>
+        <div class="confirm-amount-box">
+          <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+          <b id="confirmAmountValue">0</b>
+        </div>
+        <div class="confirm-actions">
+          <button id="confirmSendBtn" class="continue-button" type="button">Send</button>
+          <button id="confirmEditBtn" class="edit-button" type="button">Edit</button>
+        </div>
+        <p class="amount-note">You need an age check or parental consent to send Robux. Once you send, you cannot cancel.</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="loadingShade" class="shade loading-shade hidden" aria-busy="true" aria-live="polite">
+    <div class="loading-spinner" role="status" aria-label="Loading"></div>
+  </div>
+
+  <div id="successShade" class="shade hidden">
+    <section class="send-success-modal" role="dialog" aria-labelledby="successMessage">
+      <header class="send-head">
+        <div class="send-title">
+          <img class="plus-head" src="/assets/roblox-plus.svg" alt="" />
+          <h3 id="successHeadTitle">Send Robux</h3>
+        </div>
+        <div class="send-right">
+          <div class="modal-balance">
+            <img class="rbx-icon sm" src="/assets/robux.svg" alt="" />
+            <b id="successModalBalance">—</b>
+          </div>
+          <button id="successClose" type="button" aria-label="Close">×</button>
+        </div>
+      </header>
+      <div class="send-success-body">
+        <div class="success-check-ring" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="#393b3d" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M5.2 12.6 9.8 17.2 18.8 7.4"/></svg>
+        </div>
+        <p id="successMessage">You sent 0 Robux</p>
+        <button id="successDone" class="success-ok" type="button">OK</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/script.js"></script>
+</body>
+</html>

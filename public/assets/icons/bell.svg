@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Upper bell body -->
+  <path fill="#393b3d" d="M12 2.1c.58 0 1.05.42 1.05.95v.72A7.05 7.05 0 0 1 18.9 10.8v2.2l1.2 2.1c.12.22.02.5-.22.5H4.12c-.24 0-.34-.28-.22-.5l1.2-2.1v-2.2A7.05 7.05 0 0 1 10.95 3.77v-.72c0-.53.47-.95 1.05-.95Z"/>
+  <!-- Lower rim (gap between body and rim = transparent) -->
+  <path fill="#393b3d" d="M4.2 16.85h15.6c.4 0 .62.45.38.78l-.35.52H4.17l-.35-.52c-.24-.33-.02-.78.38-.78Z"/>
+  <!-- Clapper -->
+  <path fill="#393b3d" d="M10.15 19.15a1.9 1.9 0 0 0 3.7 0h-3.7Z"/>
+</svg>
