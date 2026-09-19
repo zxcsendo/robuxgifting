@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home - Roblox</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png" />
+  <link rel="shortcut icon" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/Builder.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="page-home">
+  <header class="topbar">
+    <a class="brand" href="/home" aria-label="Roblox">
+      <img class="brand-word" src="/assets/logo-wordmark.svg" alt="ROBLOX" />
+    </a>
+
+    <nav class="top-nav">
+      <a class="active" href="/home">Home</a>
+      <a>Charts</a>
+      <a>Marketplace</a>
+      <a>Create</a>
+    </nav>
+
+    <div class="site-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z"/></svg>
+      <span>Search</span>
+    </div>
+
+    <div class="top-account">
+      <span class="bell-wrap" aria-label="Notifications">
+        <img class="header-ico bell-ico" src="/assets/icons/bell.svg" alt="" width="22" height="22" />
+        <em class="bell-badge">1</em>
+      </span>
+      <div class="robux-menu" id="robuxMenu">
+        <button class="top-balance" id="robuxMenuBtn" type="button" aria-expanded="false" aria-haspopup="true">
+          <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+          <b id="topBalance">—</b>
+        </button>
+        <div class="robux-dropdown hidden" id="robuxDropdown" role="menu">
+          <a href="/" role="menuitem">Buy Robux</a>
+          <a href="/transactions" role="menuitem">My Transactions</a>
+          <a href="#" role="menuitem" id="redeemCodesLink">Redeem Roblox Codes</a>
+        </div>
+      </div>
+      <img class="header-ico gear-ico" src="/assets/icons/settings.svg" alt="" width="22" height="22" aria-label="Settings" />
+      <img class="tiny-avatar" id="headerAvatar" src="/assets/default-avatar.png" alt="" />
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <div class="side-profile side-profile-plain">
+      <img class="avatar-placeholder" id="sideAvatar" src="/assets/default-avatar.png" alt="" />
+      <span class="side-name">riri</span>
+    </div>
+
+    <a class="nav-item active" href="/home"><span class="side-ico ico-home"></span><span class="nav-label">Home</span></a>
+    <div class="nav-item"><span class="side-ico ico-profile"></span><span class="nav-label">Profile</span></div>
+    <div class="nav-item"><span class="side-ico ico-plus"><img src="/assets/roblox-plus.svg" alt="" /></span><span class="nav-label">Roblox Plus</span></div>
+    <div class="nav-item"><span class="side-ico ico-messages"></span><span class="nav-label">Messages</span><em>1</em></div>
+    <div class="nav-item"><span class="side-ico ico-friends"></span><span class="nav-label">Friends</span><em>4</em></div>
+    <div class="nav-item"><span class="side-ico ico-avatar"></span><span class="nav-label">Avatar</span></div>
+    <div class="nav-item"><span class="side-ico ico-inventory"></span><span class="nav-label">Inventory</span></div>
+    <div class="nav-item"><span class="side-ico ico-trade"></span><span class="nav-label">Trade</span></div>
+    <div class="nav-item"><span class="side-ico ico-communities"></span><span class="nav-label">Communities</span></div>
+    <div class="nav-item"><span class="side-ico ico-blog"></span><span class="nav-label">Newsroom</span></div>
+    <div class="nav-item"><span class="side-ico ico-store"></span><span class="nav-label">Official Store</span></div>
+    <div class="nav-item"><span class="side-ico ico-gift"></span><span class="nav-label">Buy Gift Cards</span></div>
+
+    <div class="subscribe-box">
+      <img class="plus-badge" src="/assets/roblox-plus.svg" alt="" />
+      <p>More fun for less Robux. Subscribe to Roblox Plus.</p>
+      <a class="subscribe-link">Subscribe</a>
+    </div>
+
+    <a class="side-ad" href="#" aria-label="THE HUNT: ROBLOX 20">
+      <img src="/assets/hunt-ad.png" alt="THE HUNT: ROBLOX 20" />
+    </a>
+  </aside>
+
+  <main class="content home-content">
+    <div class="home-page">
+      <h1 class="home-title">Home</h1>
+
+      <section class="home-section">
+        <div class="home-section-head">
+          <h2 class="home-section-title" id="friendsHeading">Friends (0)</h2>
+          <a class="home-see-all" href="#">See All <span aria-hidden="true">›</span></a>
+        </div>
+        <div class="friends-row" id="friendsRow" aria-live="polite"></div>
+      </section>
+
+      <section class="home-section">
+        <div class="home-section-head">
+          <h2 class="home-section-title">Recommended For You</h2>
+        </div>
+        <div class="game-grid" id="recommendedGrid"></div>
+      </section>
+
+      <section class="home-section">
+        <div class="home-section-head">
+          <h2 class="home-section-title home-section-link">Continue <span aria-hidden="true">›</span></h2>
+        </div>
+        <div class="continue-row" id="continueRow"></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="chat">Chat <span>□</span></div>
+  <div id="toast" class="toast"></div>
+
+  <script src="/wallet.js"></script>
+  <script src="/home.js"></script>
+</body>
+</html>

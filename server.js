@@ -45,6 +45,102 @@ const avatarBinaryCache = new Map(); // userId -> { buf, contentType, at }
 
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get("/transactions", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "transactions.html"));
+});
+
+app.get("/home", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "home.html"));
+});
+
+function formatPlayers(n) {
+  const v = Number(n) || 0;
+  if (v >= 1e6) return `${(v / 1e6).toFixed(v >= 1e7 ? 0 : 1).replace(/\.0$/, "")}M`;
+  if (v >= 1e3) return `${(v / 1e3).toFixed(v >= 1e4 ? 0 : 1).replace(/\.0$/, "")}K`;
+  return String(v);
+}
+
+function likePercent(up, down) {
+  const u = Number(up) || 0;
+  const d = Number(down) || 0;
+  const t = u + d;
+  if (!t) return 0;
+  return Math.round((u / t) * 100);
+}
+
+async function fetchGameIcons(universeIds) {
+  const map = new Map();
+  const ids = [...new Set(universeIds.map(String).filter(Boolean))];
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50);
+    const url = new URL("https://thumbnails.roblox.com/v1/games/icons");
+    url.searchParams.set("universeIds", chunk.join(","));
+    url.searchParams.set("size", "512x512");
+    url.searchParams.set("format", "Png");
+    url.searchParams.set("isCircular", "false");
+    try {
+      const res = await fetch(url, { headers: UA });
+      if (!res.ok) continue;
+      const json = await res.json();
+      for (const item of json.data || []) {
+        if (item?.imageUrl) map.set(String(item.targetId), item.imageUrl);
+      }
+    } catch (_) {}
+  }
+  return map;
+}
+
+function mapExploreGames(games, iconMap, limit) {
+  return (games || []).slice(0, limit).map(g => ({
+    universeId: g.universeId,
+    placeId: g.rootPlaceId,
+    name: g.name,
+    playerCount: g.playerCount || 0,
+    players: formatPlayers(g.playerCount),
+    likes: likePercent(g.totalUpVotes, g.totalDownVotes),
+    icon: iconMap.get(String(g.universeId)) || null
+  }));
+}
+
+app.get("/api/home/feed", async (_req, res) => {
+  try {
+    const [friendsRes, exploreRes] = await Promise.all([
+      (async () => {
+        const resolved = await resolveUsernames(DEFAULT_FRIEND_NAMES.slice(0, 8));
+        const ids = resolved.map(u => u.id).filter(Boolean);
+        const avatarMap = await fetchAvatars(ids);
+        return resolved.map(u => ({
+          id: u.id,
+          name: u.name,
+          displayName: u.displayName || u.name,
+          avatar: avatarMap.get(String(u.id)) || localAvatar(u.id)
+        }));
+      })(),
+      fetch("https://apis.roblox.com/explore-api/v1/get-sorts?sessionId=home-concept&device=computer", {
+        headers: UA
+      }).then(r => (r.ok ? r.json() : { sorts: [] })).catch(() => ({ sorts: [] }))
+    ]);
+
+    const sorts = exploreRes.sorts || [];
+    const trending = sorts.find(s => s.id === "Top_Trending_V6") || sorts.find(s => s.contentType === "Games");
+    const playing = sorts.find(s => s.id === "CCU_Based_V1") || sorts.find(s => (s.games || []).length > 10);
+
+    const recommendedRaw = (trending?.games || []).slice(0, 10);
+    const continueRaw = (playing?.games || []).slice(0, 12);
+    const allIds = [...recommendedRaw, ...continueRaw].map(g => g.universeId);
+    const iconMap = await fetchGameIcons(allIds);
+
+    res.json({
+      friends: friendsRes,
+      recommended: mapExploreGames(recommendedRaw, iconMap, 10),
+      continuePlaying: mapExploreGames(continueRaw, iconMap, 12)
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not load home feed" });
+  }
+});
+
 function localAvatar(userId) {
   return `/api/avatar/${userId}`;
 }

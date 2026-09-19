@@ -19,7 +19,7 @@ const PAYMENT_METHODS = [
   { id: "other", label: "Other", logos: ["/assets/pay/other-card.png"], enabled: false }
 ];
 
-let balance = 20000 + Math.floor(Math.random() * 4500); // around 20K+
+let balance = RblxWallet.loadBalance();
 let pendingPackage = null;
 let selectedUser = null;
 let sendAmount = 0;
@@ -41,10 +41,11 @@ function avatarImg(src, attrs = ""){
 }
 
 function syncBalance(){
+  balance = RblxWallet.saveBalance(balance);
   const text = fmt(balance);
-  $("topBalance").textContent = text;
-  $("heroBalance").textContent = text;
-  $("modalBalance").textContent = text;
+  if ($("topBalance")) $("topBalance").textContent = text;
+  if ($("heroBalance")) $("heroBalance").textContent = text;
+  if ($("modalBalance")) $("modalBalance").textContent = text;
   if ($("amountModalBalance")) $("amountModalBalance").textContent = text;
   if ($("confirmModalBalance")) $("confirmModalBalance").textContent = text;
   if ($("successModalBalance")) $("successModalBalance").textContent = text;
@@ -230,10 +231,11 @@ $("topupShade").addEventListener("click", e => { if (e.target === $("topupShade"
 $("topupConfirm").addEventListener("click", () => {
   if (!pendingPackage) return;
   const added = pendingPackage.amount;
+  const pkg = pendingPackage;
   balance += added;
   syncBalance();
   closeTopup();
-  openBuySuccess(added, pendingPackage);
+  openBuySuccess(added, pkg);
 });
 
 function openBuySuccess(added, pkg){
@@ -568,7 +570,17 @@ $("confirmSendBtn").addEventListener("click", () => {
     showToast("Not enough Robux in your wallet.");
     return;
   }
+  const name = selectedUser.displayName || selectedUser.name;
   balance -= sendAmount;
+  RblxWallet.addTransaction({
+    type: "transfer",
+    sourceId: selectedUser.id,
+    sourceName: name,
+    description: `Sent Robux to ${name}.`,
+    amount: sendAmount,
+    direction: "out",
+    avatar: `/api/avatar/${selectedUser.id}`
+  });
   syncBalance();
   closeSendConfirm();
   openSendSuccess(sendAmount);
@@ -602,5 +614,6 @@ function showToast(message){
 
 renderPackages();
 syncBalance();
+RblxWallet.bindRobuxMenu();
 loadMeAvatar();
 loadDefaultFriends();

@@ -17,10 +17,11 @@
     </a>
 
     <nav class="top-nav">
+      <a href="/home">Home</a>
       <a>Charts</a>
       <a>Marketplace</a>
       <a>Create</a>
-      <a class="active">Robux</a>
+      <a class="active" href="/">Robux</a>
     </nav>
 
     <div class="site-search">
@@ -35,38 +36,49 @@
         <img class="header-ico bell-ico" src="/assets/icons/bell.svg" alt="" width="22" height="22" />
         <em class="bell-badge">1</em>
       </span>
-      <div class="top-balance">
-        <img class="rbx-icon" src="/assets/robux.svg" alt="" />
-        <b id="topBalance">—</b>
+      <div class="robux-menu" id="robuxMenu">
+        <button class="top-balance" id="robuxMenuBtn" type="button" aria-expanded="false" aria-haspopup="true">
+          <img class="rbx-icon" src="/assets/robux.svg" alt="" />
+          <b id="topBalance">—</b>
+        </button>
+        <div class="robux-dropdown hidden" id="robuxDropdown" role="menu">
+          <a href="/" role="menuitem" class="is-current">Buy Robux</a>
+          <a href="/transactions" role="menuitem">My Transactions</a>
+          <a href="#" role="menuitem" id="redeemCodesLink">Redeem Roblox Codes</a>
+        </div>
       </div>
       <img class="header-ico gear-ico" src="/assets/icons/settings.svg" alt="" width="22" height="22" aria-label="Settings" />
     </div>
   </header>
 
   <aside class="sidebar">
-    <div class="side-profile">
+    <div class="side-profile side-profile-plain">
       <img class="avatar-placeholder" id="sideAvatar" src="/assets/default-avatar.png" alt="" />
-      <b>riri</b>
+      <span class="side-name">riri</span>
     </div>
 
-    <div class="nav-item"><span class="side-ico ico-home"></span><b>Home</b></div>
-    <div class="nav-item"><span class="side-ico ico-profile"></span><b>Profile</b></div>
-    <div class="nav-item"><span class="side-ico ico-plus"><img src="/assets/roblox-plus.svg" alt="" /></span><b>Roblox Plus</b></div>
-    <div class="nav-item"><span class="side-ico ico-messages"></span><b>Messages</b><em>1</em></div>
-    <div class="nav-item"><span class="side-ico ico-friends"></span><b>Friends</b><em>17</em></div>
-    <div class="nav-item"><span class="side-ico ico-avatar"></span><b>Avatar</b></div>
-    <div class="nav-item"><span class="side-ico ico-inventory"></span><b>Inventory</b></div>
-    <div class="nav-item"><span class="side-ico ico-trade"></span><b>Trade</b></div>
-    <div class="nav-item"><span class="side-ico ico-communities"></span><b>Communities</b></div>
-    <div class="nav-item"><span class="side-ico ico-blog"></span><b>Blog</b></div>
-    <div class="nav-item"><span class="side-ico ico-store"></span><b>Official Store</b></div>
-    <div class="nav-item"><span class="side-ico ico-gift"></span><b>Buy Gift Cards</b></div>
+    <a class="nav-item" href="/home"><span class="side-ico ico-home"></span><span class="nav-label">Home</span></a>
+    <div class="nav-item"><span class="side-ico ico-profile"></span><span class="nav-label">Profile</span></div>
+    <div class="nav-item"><span class="side-ico ico-plus"><img src="/assets/roblox-plus.svg" alt="" /></span><span class="nav-label">Roblox Plus</span></div>
+    <div class="nav-item"><span class="side-ico ico-messages"></span><span class="nav-label">Messages</span><em>1</em></div>
+    <div class="nav-item"><span class="side-ico ico-friends"></span><span class="nav-label">Friends</span><em>17</em></div>
+    <div class="nav-item"><span class="side-ico ico-avatar"></span><span class="nav-label">Avatar</span></div>
+    <div class="nav-item"><span class="side-ico ico-inventory"></span><span class="nav-label">Inventory</span></div>
+    <div class="nav-item"><span class="side-ico ico-trade"></span><span class="nav-label">Trade</span></div>
+    <div class="nav-item"><span class="side-ico ico-communities"></span><span class="nav-label">Communities</span></div>
+    <div class="nav-item"><span class="side-ico ico-blog"></span><span class="nav-label">Newsroom</span></div>
+    <div class="nav-item"><span class="side-ico ico-store"></span><span class="nav-label">Official Store</span></div>
+    <div class="nav-item"><span class="side-ico ico-gift"></span><span class="nav-label">Buy Gift Cards</span></div>
 
     <div class="subscribe-box">
       <img class="plus-badge" src="/assets/roblox-plus.svg" alt="" />
       <p>More fun for less Robux. Subscribe to Roblox Plus.</p>
       <a class="subscribe-link">Subscribe</a>
     </div>
+
+    <a class="side-ad" href="#" aria-label="THE HUNT: ROBLOX 20">
+      <img src="/assets/hunt-ad.png" alt="THE HUNT: ROBLOX 20" />
+    </a>
   </aside>
 
   <main class="content">
@@ -267,6 +279,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
+  <script src="/wallet.js"></script>
   <script src="/script.js"></script>
 </body>
 </html>
