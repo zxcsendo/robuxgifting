@@ -1,9 +1,92 @@
-/* Shared wallet + sent-Robux transaction log (localStorage) */
+/* Shared wallet + sent-Robux transaction log (localStorage + cross-tab realtime) */
 (function (global) {
   const BAL_KEY = "rblx_balance_v1";
   const TX_KEY = "rblx_tx_v2";
   const VIEWED_KEY = "rblx_tx_viewed_v1";
   const LEGACY_TX_KEYS = ["rblx_tx_v1"];
+  const CHANNEL_NAME = "rblx_wallet_sync_v1";
+  const TAB_ID = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
+
+  const listeners = new Set();
+  let channel = null;
+  let lastEmitAt = 0;
+  let remoteDebounce = null;
+  let emitTimer = null;
+  let pendingReason = "sync";
+
+  try {
+    channel = new BroadcastChannel(CHANNEL_NAME);
+  } catch (_) {
+    channel = null;
+  }
+
+  function snapshot(reason) {
+    return {
+      reason: reason || "sync",
+      tabId: TAB_ID,
+      balance: loadBalance(),
+      transactions: loadTransactions(),
+      viewed: [...loadViewed()],
+      at: Date.now()
+    };
+  }
+
+  function notifyLocal(payload) {
+    listeners.forEach(fn => {
+      try { fn(payload); } catch (_) {}
+    });
+  }
+
+  function emit(reason) {
+    pendingReason = reason || pendingReason || "sync";
+    clearTimeout(emitTimer);
+    // Coalesce balance + tx writes from the same send into one cross-tab ping
+    emitTimer = setTimeout(() => {
+      const payload = snapshot(pendingReason);
+      lastEmitAt = payload.at;
+      pendingReason = "sync";
+      if (channel) {
+        try { channel.postMessage(payload); } catch (_) {}
+      }
+    }, 0);
+  }
+
+  function onRemote(payload) {
+    if (!payload || payload.tabId === TAB_ID) return;
+    // Ignore echoes that arrive almost immediately after our own write
+    if (payload.at && Math.abs(payload.at - lastEmitAt) < 30) return;
+    notifyLocal({
+      ...payload,
+      balance: payload.balance != null ? payload.balance : loadBalance(),
+      transactions: Array.isArray(payload.transactions) ? payload.transactions : loadTransactions(),
+      viewed: Array.isArray(payload.viewed) ? payload.viewed : [...loadViewed()]
+    });
+  }
+
+  function scheduleStorageSync(key) {
+    clearTimeout(remoteDebounce);
+    remoteDebounce = setTimeout(() => {
+      const reason = key === TX_KEY ? "transactions" : key === BAL_KEY ? "balance" : "viewed";
+      onRemote({ ...snapshot(reason), tabId: "storage" });
+    }, 40);
+  }
+
+  if (channel) {
+    channel.onmessage = e => onRemote(e.data);
+  }
+
+  // Fallback when BroadcastChannel is unavailable
+  global.addEventListener("storage", e => {
+    if (channel) return;
+    if (!e.key || (e.key !== BAL_KEY && e.key !== TX_KEY && e.key !== VIEWED_KEY)) return;
+    scheduleStorageSync(e.key);
+  });
+
+  function subscribe(fn) {
+    if (typeof fn !== "function") return () => {};
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  }
 
   function loadBalance() {
     const raw = localStorage.getItem(BAL_KEY);
@@ -17,7 +100,12 @@
 
   function saveBalance(value) {
     const n = Math.max(0, Math.floor(Number(value) || 0));
+    const prevRaw = localStorage.getItem(BAL_KEY);
+    const prev = prevRaw != null && prevRaw !== "" && Number.isFinite(Number(prevRaw))
+      ? Math.floor(Number(prevRaw))
+      : null;
     localStorage.setItem(BAL_KEY, String(n));
+    if (prev !== n) emit("balance");
     return n;
   }
 
@@ -90,6 +178,7 @@
     const list = loadTransactionsRaw();
     list.unshift(normalizeTx({ ...tx, direction: "out", type: "transfer" }));
     saveTransactions(list);
+    emit("transactions");
     return list;
   }
 
@@ -107,6 +196,7 @@
     const set = loadViewed();
     set.add(String(id));
     localStorage.setItem(VIEWED_KEY, JSON.stringify([...set]));
+    emit("viewed");
     return set;
   }
 
@@ -171,6 +261,7 @@
     loadViewed,
     markViewed,
     isViewed,
+    subscribe,
     bindRobuxMenu
   };
 })(window);

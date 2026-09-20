@@ -232,3 +232,28 @@ syncBalance();
 RblxWallet.bindRobuxMenu();
 loadMeAvatar();
 renderTable();
+
+RblxWallet.subscribe(payload => {
+  if (payload.balance != null) balance = payload.balance;
+  if (Array.isArray(payload.transactions)) {
+    allTx = payload.transactions.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+    page = 1;
+  }
+  if (Array.isArray(payload.viewed)) viewed = new Set(payload.viewed.map(String));
+  else viewed = RblxWallet.loadViewed();
+  syncBalance();
+  renderTable();
+});
+
+function refreshFromStorage(){
+  balance = RblxWallet.loadBalance();
+  allTx = RblxWallet.loadTransactions();
+  viewed = RblxWallet.loadViewed();
+  syncBalance();
+  renderTable();
+}
+
+window.addEventListener("focus", refreshFromStorage);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refreshFromStorage();
+});

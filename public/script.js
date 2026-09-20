@@ -617,3 +617,9 @@ syncBalance();
 RblxWallet.bindRobuxMenu();
 loadMeAvatar();
 loadDefaultFriends();
+
+RblxWallet.subscribe(payload => {
+  if (payload.balance == null) return;
+  balance = payload.balance;
+  syncBalance();
+});
