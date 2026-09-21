@@ -74,8 +74,15 @@ function gameCard(g, { compact = false } = {}){
   `;
 }
 
+function friendsFromGiftHistory(limit = 12){
+  const gifted = RblxWallet.giftedRecipients();
+  if (!gifted.length) return [];
+  return RblxWallet.shuffle(gifted).slice(0, limit);
+}
+
 function renderFeed(data){
-  const friends = data.friends || [];
+  const fromHistory = friendsFromGiftHistory(12);
+  const friends = fromHistory.length ? fromHistory : (data.friends || []);
   $("friendsHeading").textContent = `Friends (${friends.length})`;
   $("friendsRow").innerHTML = `
     <button type="button" class="friend-card add-friend" aria-label="Add Friends">

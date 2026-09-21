@@ -299,6 +299,12 @@ async function loadMeAvatar(){
 }
 
 async function loadDefaultFriends(){
+  const gifted = RblxWallet.giftedRecipients();
+  if (gifted.length) {
+    defaultFriends = withRealAvatars(RblxWallet.shuffle(gifted));
+    return;
+  }
+
   try {
     const res = await fetch("/api/friends/default");
     if (!res.ok) throw new Error("friends failed");
@@ -309,7 +315,15 @@ async function loadDefaultFriends(){
   }
 }
 
+function refreshFriendsFromHistory(){
+  const gifted = RblxWallet.giftedRecipients();
+  if (!gifted.length) return false;
+  defaultFriends = withRealAvatars(RblxWallet.shuffle(gifted));
+  return true;
+}
+
 function openSendModal(){
+  refreshFriendsFromHistory();
   $("modalShade").classList.remove("hidden");
   $("userSearch").value = "";
   renderUsers(defaultFriends, "friends");
@@ -604,11 +618,13 @@ $("confirmSendBtn").addEventListener("click", () => {
     type: "transfer",
     sourceId: selectedUser.id,
     sourceName: name,
+    sourceUsername: selectedUser.name,
     description: `Sent Robux to ${name}.`,
     amount: sendAmount,
     direction: "out",
     avatar: `/api/avatar/${selectedUser.id}`
   });
+  refreshFriendsFromHistory();
   syncBalance();
   closeSendConfirm();
   openSendSuccess(sendAmount);
@@ -648,7 +664,9 @@ loadMeAvatar();
 loadDefaultFriends();
 
 RblxWallet.subscribe(payload => {
-  if (payload.balance == null) return;
-  balance = payload.balance;
-  syncBalance();
+  if (payload.balance != null) {
+    balance = payload.balance;
+    syncBalance();
+  }
+  if (Array.isArray(payload.transactions)) refreshFriendsFromHistory();
 });

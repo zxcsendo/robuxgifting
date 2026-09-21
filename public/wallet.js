@@ -121,12 +121,14 @@
 
   function normalizeTx(tx) {
     const name = tx.sourceName || tx.displayName || tx.name || "Unknown";
+    const username = tx.sourceUsername || tx.username || tx.name || name;
     return {
       id: tx.id || `tx-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: "transfer",
       date: tx.date || new Date().toISOString(),
       sourceId: String(tx.sourceId ?? tx.userId),
       sourceName: name,
+      sourceUsername: username,
       description: tx.description || `Sent Robux to ${name}.`,
       amount: Math.floor(Number(tx.amount) || 0),
       direction: "out",
@@ -253,6 +255,38 @@
     }
   }
 
+  function shuffle(list) {
+    const a = (list || []).slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = a[i];
+      a[i] = a[j];
+      a[j] = tmp;
+    }
+    return a;
+  }
+
+  /** Unique people you've sent Robux to (from My Transactions history). */
+  function giftedRecipients() {
+    const seen = new Set();
+    const out = [];
+    for (const tx of loadTransactions()) {
+      const id = String(tx.sourceId || "");
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      out.push({
+        id,
+        name: tx.sourceUsername || tx.sourceName,
+        displayName: tx.sourceName || tx.sourceUsername || "Unknown",
+        avatar: tx.avatar && String(tx.avatar).startsWith("/api/avatar/")
+          ? tx.avatar
+          : `/api/avatar/${id}`,
+        plus: false
+      });
+    }
+    return out;
+  }
+
   global.RblxWallet = {
     loadBalance,
     saveBalance,
@@ -262,6 +296,8 @@
     markViewed,
     isViewed,
     subscribe,
+    shuffle,
+    giftedRecipients,
     bindRobuxMenu
   };
 })(window);
