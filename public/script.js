@@ -108,6 +108,34 @@ function userRowHtml(u, { showUsername = false } = {}){
   `;
 }
 
+function getBonusDaysLeft(){
+  const KEY = "rblx_bonus_start_day_v1";
+  const START_DAYS = 9;
+  const now = new Date();
+  const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  let startKey = localStorage.getItem(KEY);
+  if (!startKey) {
+    localStorage.setItem(KEY, todayKey);
+    startKey = todayKey;
+  }
+  const [y, m, d] = startKey.split("-").map(Number);
+  if (!y || !m || !d) {
+    localStorage.setItem(KEY, todayKey);
+    return START_DAYS;
+  }
+  const start = new Date(y, m - 1, d);
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const elapsed = Math.floor((today - start) / 86400000);
+  return Math.max(0, START_DAYS - elapsed);
+}
+
+function syncBonusDays(){
+  const el = $("bonusDays");
+  if (!el) return;
+  const days = getBonusDaysLeft();
+  el.textContent = days === 1 ? "1 day left" : `${days} days left`;
+}
+
 function renderPackages(){
   $("priceBox").innerHTML = packages.map((p, i) => `
     <div class="package">
@@ -613,6 +641,7 @@ function showToast(message){
 }
 
 renderPackages();
+syncBonusDays();
 syncBalance();
 RblxWallet.bindRobuxMenu();
 loadMeAvatar();

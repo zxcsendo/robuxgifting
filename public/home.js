@@ -107,9 +107,40 @@ async function loadFeed(){
   }
 }
 
+function bindHorizontalWheel(el){
+  if (!el || el.dataset.wheelBound) return;
+  el.dataset.wheelBound = "1";
+  el.addEventListener("wheel", e => {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    if (el.scrollWidth <= el.clientWidth + 1) return;
+    e.preventDefault();
+    el.scrollLeft += e.deltaY;
+  }, { passive: false });
+
+  let dragging = false;
+  let startX = 0;
+  let startScroll = 0;
+  el.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true;
+    startX = e.clientX;
+    startScroll = el.scrollLeft;
+    el.setPointerCapture?.(e.pointerId);
+  });
+  el.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    el.scrollLeft = startScroll - (e.clientX - startX);
+  });
+  const stopDrag = () => { dragging = false; };
+  el.addEventListener("pointerup", stopDrag);
+  el.addEventListener("pointercancel", stopDrag);
+}
+
 syncBalance();
 RblxWallet.bindRobuxMenu();
 loadMeAvatar();
+bindHorizontalWheel($("friendsRow"));
+bindHorizontalWheel($("continueRow"));
 loadFeed();
 
 RblxWallet.subscribe(payload => {

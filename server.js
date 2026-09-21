@@ -11,34 +11,45 @@ const UA = {
   Accept: "application/json"
 };
 
+/* Real Roblox accounts with custom headshots (no classic staff / default blockheads) */
 const DEFAULT_FRIEND_NAMES = [
-  "sainTpablo",
-  "XeiDG",
-  "chano",
+  "KreekCraft",
+  "jandel",
+  "LeahAshe",
+  "itsfunneh",
+  "Russoplays",
+  "iiAlex",
+  "chromazz",
   "flaminghotcheet0x",
-  "Builderman",
-  "Roblox",
-  "Shedletsky",
-  "Telamon",
-  "Player1",
-  "RobloFan",
-  "asimo3089",
-  "stickmasterluke",
-  "Merely",
-  "CloneTrooper1019",
-  "ScriptGuider",
-  "TheNexusAvenger",
-  "MaximumADHD",
-  "1waffle1",
-  "berezaa",
-  "Quenty",
-  "EgoMoose",
-  "ScriptOn",
-  "Zeuxcg",
-  "Seranok",
-  "SphinxKnight",
-  "ConvexRumbler"
+  "xeidg",
+  "o_ren8",
+  "SaintPablo",
+  "Valkyrae",
+  "Sykkuno",
+  "pokimane",
+  "Poke",
+  "Mrllama",
+  "Ashfur",
+  "Amelia_skye",
+  "Lovely_Lexi",
+  "PixelQueen",
+  "MoonLitRose",
+  "NovaPulse",
+  "lilacdream",
+  "echoblaze",
+  "CloudNine",
+  "Peachykeen"
 ];
+
+function shuffleInPlace(list) {
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = list[i];
+    list[i] = list[j];
+    list[j] = tmp;
+  }
+  return list;
+}
 
 const avatarCache = new Map(); // userId -> { url, at }
 const avatarBinaryCache = new Map(); // userId -> { buf, contentType, at }
@@ -106,7 +117,8 @@ app.get("/api/home/feed", async (_req, res) => {
   try {
     const [friendsRes, exploreRes] = await Promise.all([
       (async () => {
-        const resolved = await resolveUsernames(DEFAULT_FRIEND_NAMES.slice(0, 8));
+        const pool = shuffleInPlace([...DEFAULT_FRIEND_NAMES]).slice(0, 10);
+        const resolved = await resolveUsernames(pool);
         const ids = resolved.map(u => u.id).filter(Boolean);
         const avatarMap = await fetchAvatars(ids);
         return resolved.map(u => ({
@@ -304,7 +316,8 @@ app.get("/api/avatar/:userId", async (req, res) => {
 
 app.get("/api/friends/default", async (_req, res) => {
   try {
-    const resolved = await resolveUsernames(DEFAULT_FRIEND_NAMES);
+    const names = shuffleInPlace([...DEFAULT_FRIEND_NAMES]);
+    const resolved = await resolveUsernames(names);
     const ids = resolved.map(u => u.id).filter(Boolean);
     const avatarMap = await fetchAvatars(ids);
 
